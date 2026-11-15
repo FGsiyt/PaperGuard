@@ -1,0 +1,545 @@
+{
+  "$defs": {
+    "CitationOccurrence": {
+      "properties": {
+        "citation_key": {
+          "title": "Citation Key",
+          "type": "string"
+        },
+        "source_file": {
+          "title": "Source File",
+          "type": "string"
+        },
+        "line_number": {
+          "title": "Line Number",
+          "type": "integer"
+        },
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "context_before": {
+          "default": "",
+          "title": "Context Before",
+          "type": "string"
+        },
+        "cited_text": {
+          "default": "",
+          "title": "Cited Text",
+          "type": "string"
+        },
+        "context_after": {
+          "default": "",
+          "title": "Context After",
+          "type": "string"
+        },
+        "section": {
+          "default": "",
+          "title": "Section",
+          "type": "string"
+        }
+      },
+      "required": [
+        "citation_key",
+        "source_file",
+        "line_number",
+        "command"
+      ],
+      "title": "CitationOccurrence",
+      "type": "object"
+    },
+    "FieldComparison": {
+      "properties": {
+        "field_name": {
+          "title": "Field Name",
+          "type": "string"
+        },
+        "input_value": {
+          "default": "",
+          "title": "Input Value",
+          "type": "string"
+        },
+        "verified_value": {
+          "default": "",
+          "title": "Verified Value",
+          "type": "string"
+        },
+        "comparison_status": {
+          "enum": [
+            "match",
+            "minor_difference",
+            "mismatch",
+            "missing_in_source",
+            "missing_in_input",
+            "not_comparable"
+          ],
+          "title": "Comparison Status",
+          "type": "string"
+        },
+        "difference_explanation": {
+          "default": "",
+          "title": "Difference Explanation",
+          "type": "string"
+        },
+        "source_name": {
+          "title": "Source Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "comparison_status",
+        "source_name"
+      ],
+      "title": "FieldComparison",
+      "type": "object"
+    },
+    "Finding": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "category": {
+          "default": "citation",
+          "title": "Category",
+          "type": "string"
+        },
+        "severity": {
+          "default": "warning",
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "status": {
+          "default": "open",
+          "enum": [
+            "open",
+            "resolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "title": "Evidence",
+          "type": "object"
+        },
+        "source_location": {
+          "additionalProperties": true,
+          "title": "Source Location",
+          "type": "object"
+        },
+        "suggestion": {
+          "default": "",
+          "title": "Suggestion",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 1,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "source": {
+          "default": "PaperGuard",
+          "title": "Source",
+          "type": "string"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "message"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "Reference": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "citation_key": {
+          "title": "Citation Key",
+          "type": "string"
+        },
+        "entry_type": {
+          "title": "Entry Type",
+          "type": "string"
+        },
+        "raw_bibtex": {
+          "title": "Raw Bibtex",
+          "type": "string"
+        },
+        "input_metadata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Input Metadata",
+          "type": "object"
+        },
+        "source_file": {
+          "title": "Source File",
+          "type": "string"
+        },
+        "source_line": {
+          "title": "Source Line",
+          "type": "integer"
+        },
+        "citation_locations": {
+          "items": {
+            "$ref": "#/$defs/CitationOccurrence"
+          },
+          "title": "Citation Locations",
+          "type": "array"
+        },
+        "verification_status": {
+          "$ref": "#/$defs/Verification",
+          "default": "unverified"
+        },
+        "metadata_fields": {
+          "items": {
+            "$ref": "#/$defs/FieldComparison"
+          },
+          "title": "Metadata Fields",
+          "type": "array"
+        },
+        "candidate_matches": {
+          "items": {
+            "$ref": "#/$defs/SourceRecord"
+          },
+          "title": "Candidate Matches",
+          "type": "array"
+        },
+        "selected_match": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceRecord"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "queries": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Queries",
+          "type": "array"
+        },
+        "pdf_status": {
+          "default": "not_attempted",
+          "enum": [
+            "downloaded",
+            "user_uploaded",
+            "not_available",
+            "download_failed",
+            "needs_manual_review",
+            "not_attempted"
+          ],
+          "title": "Pdf Status",
+          "type": "string"
+        },
+        "pdf_path": {
+          "default": "",
+          "title": "Pdf Path",
+          "type": "string"
+        },
+        "first_page_path": {
+          "default": "",
+          "title": "First Page Path",
+          "type": "string"
+        },
+        "pdf_match_status": {
+          "default": "needs_manual_review",
+          "enum": [
+            "confirmed",
+            "probable",
+            "mismatch",
+            "needs_manual_review"
+          ],
+          "title": "Pdf Match Status",
+          "type": "string"
+        },
+        "pdf_evidence": {
+          "additionalProperties": true,
+          "title": "Pdf Evidence",
+          "type": "object"
+        },
+        "pdf_approved": {
+          "default": false,
+          "title": "Pdf Approved",
+          "type": "boolean"
+        },
+        "correction_approved": {
+          "default": false,
+          "title": "Correction Approved",
+          "type": "boolean"
+        },
+        "semantic_audit_status": {
+          "default": "not_checked",
+          "enum": [
+            "supported",
+            "partially_supported",
+            "unsupported",
+            "contradicted",
+            "insufficient_evidence",
+            "not_checked"
+          ],
+          "title": "Semantic Audit Status",
+          "type": "string"
+        },
+        "semantic_results": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Semantic Results",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "processed": {
+          "default": false,
+          "title": "Processed",
+          "type": "boolean"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "citation_key",
+        "entry_type",
+        "raw_bibtex",
+        "input_metadata",
+        "source_file",
+        "source_line"
+      ],
+      "title": "Reference",
+      "type": "object"
+    },
+    "SourceRecord": {
+      "properties": {
+        "source_name": {
+          "title": "Source Name",
+          "type": "string"
+        },
+        "source_record_id": {
+          "title": "Source Record Id",
+          "type": "string"
+        },
+        "query_type": {
+          "title": "Query Type",
+          "type": "string"
+        },
+        "query_value": {
+          "title": "Query Value",
+          "type": "string"
+        },
+        "source_url": {
+          "default": "",
+          "title": "Source Url",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "raw_metadata": {
+          "additionalProperties": true,
+          "title": "Raw Metadata",
+          "type": "object"
+        },
+        "normalized_metadata": {
+          "additionalProperties": true,
+          "title": "Normalized Metadata",
+          "type": "object"
+        },
+        "score": {
+          "default": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "match_basis": {
+          "additionalProperties": true,
+          "title": "Match Basis",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_name",
+        "source_record_id",
+        "query_type",
+        "query_value"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "Verification": {
+      "enum": [
+        "verified",
+        "possible_match",
+        "metadata_mismatch",
+        "not_found",
+        "unverified",
+        "manual_review"
+      ],
+      "title": "Verification",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "project_path": {
+      "title": "Project Path",
+      "type": "string"
+    },
+    "main_tex": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Main Tex"
+    },
+    "bib_files": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Bib Files",
+      "type": "array"
+    },
+    "status": {
+      "default": "queued",
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "partial",
+        "cancelled",
+        "failed",
+        "interrupted"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "progress": {
+      "default": 0,
+      "title": "Progress",
+      "type": "number"
+    },
+    "current_stage": {
+      "default": "queued",
+      "title": "Current Stage",
+      "type": "string"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    },
+    "output_path": {
+      "default": "",
+      "title": "Output Path",
+      "type": "string"
+    },
+    "error_summary": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Summary",
+      "type": "array"
+    },
+    "references": {
+      "items": {
+        "$ref": "#/$defs/Reference"
+      },
+      "title": "References",
+      "type": "array"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "options": {
+      "additionalProperties": true,
+      "title": "Options",
+      "type": "object"
+    },
+    "input_hash": {
+      "default": "",
+      "title": "Input Hash",
+      "type": "string"
+    },
+    "reference_order": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reference Order",
+      "type": "array"
+    },
+    "order_basis": {
+      "default": "",
+      "title": "Order Basis",
+      "type": "string"
+    },
+    "merged_pages": {
+      "default": 0,
+      "title": "Merged Pages",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "project_path"
+  ],
+  "title": "AuditTask",
+  "type": "object"
+}
